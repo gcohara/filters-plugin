@@ -31,8 +31,14 @@ private:
     // access the processor object that created it.
     FiltersAudioProcessor& audioProcessor;
     
-    juce::Slider cutoffFreq;
-    juce::Slider resonance;
+    juce::Label cutoffLabel;
+    juce::Slider cutoffFreqKnob;
+    
+    juce::Label resonanceLabel;
+    juce::Slider resonanceKnob;
+    
+    juce::Label blendLabel;
+    juce::Slider blendKnob;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FiltersAudioProcessorEditor)
 };

@@ -15,21 +15,41 @@ FiltersAudioProcessorEditor::FiltersAudioProcessorEditor (FiltersAudioProcessor&
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 200);
+    setSize (600, 200);
     
     // Set the look of the sliders (i.e as knobs).
     // We can set by moving mouse left to right or up and down
-    cutoffFreq.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
-    resonance.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    cutoffFreqKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    resonanceKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    blendKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     // Put the values underneath the knobs
-    cutoffFreq.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
-    resonance.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
+    cutoffFreqKnob.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
+    resonanceKnob.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
+    blendKnob.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
+    // Set range
+    cutoffFreqKnob.setRange(20.0, 20000.0);
+    blendKnob.setRange(0.0, 1.0);
     // Add the listeners to the sliders
-    cutoffFreq.addListener(this);
-    resonance.addListener(this);
+    cutoffFreqKnob.addListener(this);
+    resonanceKnob.addListener(this);
+    blendKnob.addListener(this);
+    // Set up labels
+    cutoffLabel.setText("Cutoff Freq", juce::dontSendNotification);
+    cutoffLabel.attachToComponent(&cutoffFreqKnob, false);
+    
+    resonanceLabel.setText("Resonance", juce::dontSendNotification);
+    resonanceLabel.attachToComponent(&resonanceKnob, false);
+    
+    blendLabel.setText("Blend", juce::dontSendNotification);
+    blendLabel.attachToComponent(&blendKnob, false);
+    
     // Make sliders/knobs visible
-    addAndMakeVisible(&cutoffFreq);
-    addAndMakeVisible(&resonance);
+    addAndMakeVisible(&cutoffFreqKnob);
+    addAndMakeVisible(&cutoffLabel);
+    addAndMakeVisible(&resonanceKnob);
+    addAndMakeVisible(&resonanceLabel);
+    addAndMakeVisible(&blendKnob);
+    addAndMakeVisible(&blendLabel);
 }
 
 FiltersAudioProcessorEditor::~FiltersAudioProcessorEditor()
@@ -51,16 +71,19 @@ void FiltersAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    cutoffFreq.setBounds(220, 20, 180, 180);
-    resonance.setBounds(0, 20, 180, 180);
+    blendKnob.setBounds(440, 20, 180, 180);
+    cutoffFreqKnob.setBounds(220, 20, 180, 180);
+    resonanceKnob.setBounds(0, 20, 180, 180);
 }
 
 void FiltersAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
 {
-    if (slider == &cutoffFreq) {
-        audioProcessor.cutoffFrequency = cutoffFreq.getValue();
-    } else if (slider == &resonance) {
-        audioProcessor.resonance = resonance.getValue();
+    if (slider == &cutoffFreqKnob) {
+        audioProcessor.cutoffFrequency = cutoffFreqKnob.getValue();
+    } else if (slider == &resonanceKnob) {
+        audioProcessor.resonance = resonanceKnob.getValue();
+    } else if (slider == &blendKnob) {
+        audioProcessor.blend = blendKnob.getValue();
     }
 }
 
