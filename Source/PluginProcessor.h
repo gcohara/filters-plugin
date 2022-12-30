@@ -22,6 +22,9 @@ public:
     // parameters
     float cutoffFrequency;
     float resonance;
+    float previousSample;
+    float previousPreviousSample;
+    float blend;
     
     //==============================================================================
     FiltersAudioProcessor();
