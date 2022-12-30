@@ -24,6 +24,9 @@ FiltersAudioProcessorEditor::FiltersAudioProcessorEditor (FiltersAudioProcessor&
     // Put the values underneath the knobs
     cutoffFreq.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
     resonance.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 90, 20);
+    // Add the listeners to the sliders
+    cutoffFreq.addListener(this);
+    resonance.addListener(this);
     // Make sliders/knobs visible
     addAndMakeVisible(&cutoffFreq);
     addAndMakeVisible(&resonance);
@@ -51,3 +54,13 @@ void FiltersAudioProcessorEditor::resized()
     cutoffFreq.setBounds(220, 20, 180, 180);
     resonance.setBounds(0, 20, 180, 180);
 }
+
+void FiltersAudioProcessorEditor::sliderValueChanged (juce::Slider* slider)
+{
+    if (slider == &cutoffFreq) {
+        audioProcessor.cutoffFrequency = cutoffFreq.getValue();
+    } else if (slider == &resonance) {
+        audioProcessor.resonance = resonance.getValue();
+    }
+}
+

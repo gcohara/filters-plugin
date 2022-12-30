@@ -19,6 +19,10 @@ class FiltersAudioProcessor  : public juce::AudioProcessor
                             #endif
 {
 public:
+    // parameters
+    float cutoffFrequency;
+    float resonance;
+    
     //==============================================================================
     FiltersAudioProcessor();
     ~FiltersAudioProcessor() override;

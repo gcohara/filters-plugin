@@ -152,8 +152,11 @@ void FiltersAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     // interleaved by keeping the same state.
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
-
+       // auto len = buffer.getNumSamples();
+        //auto* channelData = buffer.getWritePointer (channel);
+        //for (size_t i = 0; i < len; i++) {
+         //   channelData[i] = channelData[i] * cutoffFrequency;
+         // }
         // ..do something to the data...
     }
 }
