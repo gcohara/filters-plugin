@@ -9,19 +9,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+
 //==============================================================================
 FiltersAudioProcessor::FiltersAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+                       .withInput  ("Input",  juce::AudioChannelSet::mono(), true)
                       #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+                       .withOutput ("Output", juce::AudioChannelSet::mono(), true)
                      #endif
                        )
 #endif
 {
+    filter = LPFOrder2();
 }
 
 FiltersAudioProcessor::~FiltersAudioProcessor()
@@ -95,8 +97,8 @@ void FiltersAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    previousSample = 0.0;
-    previousPreviousSample = 0.0;
+    resonance = 0.00001;
+    cutoffFrequency = 0.00001;
 }
 
 void FiltersAudioProcessor::releaseResources()
@@ -152,20 +154,16 @@ void FiltersAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    double pi = 3.1415926535;
-    double period = 1 / getSampleRate();
-    double omega_a = 2 * getSampleRate() * std::tan(pi * cutoffFrequency * period);
-    double g = omega_a * period / 2;
-    double alpha = g / (1.0 + g);
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
+        
         auto* channelData = buffer.getWritePointer (channel);
         for (auto i = 0; i < buffer.getNumSamples(); i++) {
+            filter.calculate_coeffs(cutoffFrequency, resonance, getSampleRate());
             double currentSample = channelData[i];
-            double outputSample = (previousSample * (1 - alpha)) + (alpha * currentSample);
-            previousSample = outputSample + (alpha * (currentSample - previousSample));
-            channelData[i] = outputSample;
-            
+            double output = filter.get_output_sample(currentSample);
+            double blended_output = (blend * (output - currentSample)) + currentSample;
+            channelData[i] = blended_output;
         }
         //..do something to the data...
     }

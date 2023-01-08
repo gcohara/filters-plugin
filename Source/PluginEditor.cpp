@@ -29,6 +29,7 @@ FiltersAudioProcessorEditor::FiltersAudioProcessorEditor (FiltersAudioProcessor&
     // Set range
     cutoffFreqKnob.setRange(20.0, 20000.0);
     blendKnob.setRange(0.0, 1.0);
+    resonanceKnob.setRange(0.5, 20.0);
     // Add the listeners to the sliders
     cutoffFreqKnob.addListener(this);
     resonanceKnob.addListener(this);
