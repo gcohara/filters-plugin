@@ -97,8 +97,9 @@ void FiltersAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    resonance = 0.00001;
-    cutoffFrequency = 0.00001;
+    resonance = initialResonance;
+    cutoffFrequency = initialCutoff;
+    blend = initialBlend;
 }
 
 void FiltersAudioProcessor::releaseResources()

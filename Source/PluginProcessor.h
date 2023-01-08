@@ -10,6 +10,9 @@
 
 #include <JuceHeader.h>
 double constexpr pi = 3.1415926535;
+double constexpr initialCutoff = 10000.0;
+double constexpr initialResonance = 1.0;
+double constexpr initialBlend = 1.0;
 //==============================================================================
 /**
 */
@@ -60,6 +63,23 @@ public:
         double gamma = (0.5 + beta) * cos_theta_c;
         a_0 = (0.5 + beta - gamma) / 2.0;
         a_1 = (0.5 + beta - gamma);
+        a_2 = a_0;
+        b_1 = - 2.0 * gamma;
+        b_2 = 2.0 * beta;
+    }
+};
+
+class HPFOrder2 : public BiQuadFilter {
+public:
+    void calculate_coeffs(double cutoff, double resonance, double sample_rate){
+        double theta_c = 2.0 * pi * cutoff / sample_rate;
+        double d = 1.0 / resonance;
+        double sin_theta_c = sin(theta_c);
+        double cos_theta_c = cos(theta_c);
+        double beta = 0.5 * (1.0 - (d * sin_theta_c/2.0)) / (1.0 + (d * sin_theta_c/2.0));
+        double gamma = (0.5 + beta) * cos_theta_c;
+        a_0 = (0.5 + beta + gamma) / 2.0;
+        a_1 = -(0.5 + beta + gamma);
         a_2 = a_0;
         b_1 = - 2.0 * gamma;
         b_2 = 2.0 * beta;
